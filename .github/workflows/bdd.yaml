@@ -3,7 +3,7 @@ name: BDD tests
 on:
   push:
     branches:
-      - master
+      # - master
   pull_request:
 
 jobs:
@@ -22,6 +22,11 @@ jobs:
         run: wget -O docker-compose.yml https://raw.githubusercontent.com/RedHatInsights/insights-behavioral-spec/main/docker-compose.yml
       - name: Retrieve BDD runner
         run: wget -O bdd_runner.sh https://raw.githubusercontent.com/RedHatInsights/insights-behavioral-spec/main/run_in_docker.sh && chmod +x bdd_runner.sh
+      - run: |
+          sed -i 's/quay\.io\/redhat-services-prod\/obsint-processing-tenant\/insights-behavioral-spec\/insights-behavioral-spec:latest/quay.io\/joseluis\/insights-bdd:latest/' docker-compose.yml
+          sed -i 's/insights-behavioral-spec:latest/insights-bdd:latest/' bdd_runner.sh
+          cat docker-compose.yml
+
       - name: Run BDD
         run: ./bdd_runner.sh notification-writer-tests .
 
